@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xin.scoutzhang.dao.IUserDao">
+    <resultMap id="Base_Result" type="xin.scoutzhang.domain.User">
+        <id column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="VARCHAR"/>
+        <result column="verify_idcard" property="verifyIdcard" jdbcType="VARCHAR"/>
+        <result column="verify_name" property="verifyName" jdbcType="VARCHAR"/>
+        <result column="verify_picture" property="verifyPicture" jdbcType="VARCHAR"/>
+        <result column="verify_status" property="verifyStatus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 通用查询列 -->
+    <sql id="Base_Column_List">
+        <![CDATA[
+        user_id, username, password, phone, icon, user_type, verify_idcard, verify_name, verify_picture, verify_status
+        ]]>
+    </sql>
+
+    <select id="selectUserByUserId" resultMap="Base_Result" parameterType="java.lang.String">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectUserByUsername" resultMap="Base_Result" parameterType="java.lang.String">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user WHERE username = #{username}
+    </select>
+
+    <insert id="insertUser" parameterType="xin.scoutzhang.domain.User">
+        INSERT INTO user VALUES(#{userId}, #{username}, #{password}, #{phone}, #{icon}, #{userType}, #{verifyIdcard}, #{verifyName}, #{verifyPicture}, #{verifyStatus})
+    </insert>
+
+    <update id="updateUser" parameterType="xin.scoutzhang.domain.User">
+        UPDATE user SET
+        password = #{password}, phone = #{phone}, icon = #{icon}, user_type = #{userType}, verify_idcard = #{verifyIdcard}, verify_name = #{verifyName}, verify_picture = #{verifyPicture}, verify_status = #{verifyStatus}
+        WHERE user_id = #{userId}
+    </update>
+</mapper>
