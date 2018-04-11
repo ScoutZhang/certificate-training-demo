@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xin.scoutzhang.dao.IUserDao;
 import xin.scoutzhang.domain.User;
 import xin.scoutzhang.util.UUIDUtil;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
+    @Transactional
     public boolean setUser(User user) {
         if(user==null){
             logger.warn("Invalid input of user == null");
@@ -52,6 +54,7 @@ public class UserServiceImpl implements IUserService{
             int res = userDao.insertUser(user);
             if(res==1){
                 logger.debug("[setUser] insert success");
+                //throw new RuntimeException("test transaction");
                 return true;
             }else{
                 logger.warn("[setUser] insert fail");
