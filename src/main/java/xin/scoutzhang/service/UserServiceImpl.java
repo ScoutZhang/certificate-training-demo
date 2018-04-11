@@ -32,33 +32,51 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
+    public User getUserByUsername(String username){
+        if(username==null||"".equals(username)){
+            logger.warn("Invalid input of username: "+username);
+            return null;
+        }else{
+            logger.debug("[getUserByUsername] username: "+username);
+            User user = userDao.selectUserByUsername(username);
+            return user;
+        }
+    }
+
+    @Override
     @Transactional
-    public boolean setUser(User user) {
+    public int setUser(User user) {
         if(user==null){
             logger.warn("Invalid input of user == null");
-            return false;
+            return -2;
         }else if(user.getUsername()==null||user.getPassword()==null||user.getPhone()==null||
                 user.getUserType()==null){
             logger.warn("Incomplete user object");
-            return false;
+            return -2;
         }else if(!user.getUserType().equals("person")&&!user.getUserType().equals("company")){
             logger.error("wrong parameter of User.userType, must be: person OR company");
-            return false;
+            return -2;
         }else if(user.getIcon()==null||user.getVerifyStatus()!=-1){
             logger.error("wrong parameter of User.getIcon OR User.verifyStatus, these params should be inserted automatically");
-            return false;
+            return -2;
         }else{
             logger.debug("[setUser] user: "+user);
+            User existUser = getUserByUsername(user.getUsername());
+            if(existUser!=null){
+                //已存在相同用户名用户
+                logger.warn("[setUser] insert fail, username has already sign up, please choose another username ");
+                return -1;
+            }
             String userId = UUIDUtil.get20UUID();
             user.setUserId(userId);
             int res = userDao.insertUser(user);
             if(res==1){
                 logger.debug("[setUser] insert success");
                 //throw new RuntimeException("test transaction");
-                return true;
+                return 1;
             }else{
                 logger.warn("[setUser] insert fail");
-                return false;
+                return 0;
             }
         }
     }

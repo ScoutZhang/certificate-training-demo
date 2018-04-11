@@ -36,9 +36,13 @@ public class UserController {
             //前端提供选项参数失败，导致错误信息传入后台
             return ResponseUtil.codeResponse(Code.UNDEFINED);
         }else{
-            boolean res = userService.setUser(user);
-            if(res){
+            int res = userService.setUser(user);
+            if(res == 1){
                 return ResponseUtil.successResponse(user);
+            }else if(res == -2){
+                return ResponseUtil.codeResponse(Code.UNDEFINED);
+            }else if(res == -1){
+                return ResponseUtil.codeResponse(Code.ACCOUNT_ALREADY_EXIST);
             }else{
                 return ResponseUtil.failResponse(user);
             }
